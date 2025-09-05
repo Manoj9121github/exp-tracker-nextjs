@@ -17,18 +17,20 @@ export default function TransactionForm() {
     .filter((t) => t.type === "expense")
     .reduce((acc, t) => acc + t.amount, 0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (type === "expense" && totalExpenses + amount > BUDGET_LIMIT) {
       alert(`Budget limit of ₹${BUDGET_LIMIT} exceeded!`);
       return;
     }
+
     const newTransaction: TransactionType = {
       id: Date.now(),
       type,
       description,
       amount,
     };
+
     addTransaction(newTransaction);
     setDescription("");
     setAmount(0);
@@ -39,7 +41,13 @@ export default function TransactionForm() {
       onSubmit={handleSubmit}
       className="space-y-2 p-4 border rounded shadow"
     >
-      <select value={type} onChange={(e) => setType(e.target.value as any)}>
+      <select
+        value={type}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+          setType(e.target.value as "income" | "expense")
+        }
+        className="border p-1 rounded w-full"
+      >
         <option value="income">Income</option>
         <option value="expense">Expense</option>
       </select>
@@ -52,6 +60,7 @@ export default function TransactionForm() {
         className="border p-1 rounded w-full"
         required
       />
+
       <input
         type="number"
         placeholder="Amount"
@@ -60,6 +69,7 @@ export default function TransactionForm() {
         className="border p-1 rounded w-full"
         required
       />
+
       <button
         type="submit"
         className="bg-blue-600 text-white p-2 rounded w-full"
